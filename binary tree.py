@@ -99,29 +99,29 @@ def print_huffman_tree(node, indent=""):
             print(f"{indent}└── Right:")
             print_huffman_tree(node.right, indent + "    ")
 
+if __name__=="__main__":
+    # Ví dụ sử dụng
+    frequencies = {'j': 2, 'q': 2, '5': 1, 'L': 1, 'z': 1}
 
-# Ví dụ sử dụng
-frequencies = {'j': 2, 'q': 2, '5': 1, 'L': 1, 'z': 1}
+    # Tạo cây Huffman
+    huffman_tree = build_huffman_tree(frequencies)
+    # print_huffman_tree(huffman_tree)
 
-# Tạo cây Huffman
-huffman_tree = build_huffman_tree(frequencies)
-# print_huffman_tree(huffman_tree)
+    # Bước 1: Mã hóa cây Huffman thành chuỗi ASCII8
+    huffman_text = generate_huffman_text(huffman_tree)
+    print("Huffman Text Representation (ASCII8):")
+    print(huffman_text)
 
-# Bước 1: Mã hóa cây Huffman thành chuỗi ASCII8
-huffman_text = generate_huffman_text(huffman_tree)
-print("Huffman Text Representation (ASCII8):")
-print(huffman_text)
+    # Bước 2: Giải mã lại cây từ chuỗi ASCII8
+    decoded_huffman_tree = build_tree_from_ascii8(huffman_text)
+    # print_huffman_tree(decoded_huffman_tree)
 
-# Bước 2: Giải mã lại cây từ chuỗi ASCII8
-decoded_huffman_tree = build_tree_from_ascii8(huffman_text)
-# print_huffman_tree(decoded_huffman_tree)
-
-# # Bước 3: In cây Huffman đã được giải mã
-# print("Huffman Tree decoded from ASCII8 representation:")
-# print_huffman_tree(decoded_huffman_tree)
-#
-# # Bước 4: Giải mã văn bản từ cây Huffman
-# encoded_text = "1101010110..."  # Chuỗi mã hóa để giải mã (cần thay thế bằng chuỗi thực tế)
-# decoded_text = decode_huffman_tree(decoded_huffman_tree, encoded_text)
-# print("Decoded Text from Huffman Tree:")
-# print(decoded_text)
+    # # Bước 3: In cây Huffman đã được giải mã
+    # print("Huffman Tree decoded from ASCII8 representation:")
+    # print_huffman_tree(decoded_huffman_tree)
+    #
+    # # Bước 4: Giải mã văn bản từ cây Huffman
+    # encoded_text = "1101010110..."  # Chuỗi mã hóa để giải mã (cần thay thế bằng chuỗi thực tế)
+    # decoded_text = decode_huffman_tree(decoded_huffman_tree, encoded_text)
+    # print("Decoded Text from Huffman Tree:")
+    # print(decoded_text)
