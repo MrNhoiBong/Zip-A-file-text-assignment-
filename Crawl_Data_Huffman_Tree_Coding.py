@@ -2,7 +2,6 @@ import urllib.request
 from bs4 import BeautifulSoup
 import re
 from collections import Counter
-import math
 
 # Hàm lấy dữ liệu từ URL (sử dụng urllib):
 def crawl_data_from_url(url):
@@ -47,32 +46,17 @@ def count_ascii_characters(text):
     return ascii_frequencies
 
 # Hàm chia nhóm các ký tự có tần suất gần nhau:
-def group_frequencies(frequencies, threshold=5):
-    grouped_frequencies = {}
-
-    # Sắp xếp các ký tự theo tần suất giảm dần:
-    sorted_freq = sorted(frequencies.items(), key=lambda x: x[1], reverse=True)
-
-    current_group = []
-    prev_freq = sorted_freq[0][1]
-
-    for char, freq in sorted_freq:
-        if abs(prev_freq - freq) <= threshold:
-            current_group.append((char, freq))
+def group_frequencies(frequencies):
+    max = list(frequencies.items())[0][0]
+    check = list(frequencies.items())[0][0]
+    for i in frequencies:
+        if frequencies[i] < frequencies[max]*0.7 and frequencies[i] < frequencies[check]*0.8:
+            max = i
         else:
-            grouped_frequencies[prev_freq] = current_group
-            current_group = [(char, freq)]
-        prev_freq = freq
+            frequencies[i] = frequencies[max]
+        check = i
+    return frequencies
 
-    if current_group:
-        grouped_frequencies[prev_freq] = current_group
-
-    return grouped_frequencies
-
-# Hàm tính số bit tối thiểu cần thiết để mã hóa mỗi ký tự:
-def calculate_min_bits(frequencies):
-    total_chars = sum(frequencies.values())
-    return math.ceil(math.log2(total_chars))
 
 # Hàm lấy văn bản từ URL và thẻ HTML do người dùng nhập:
 def get_text(url, tag):
@@ -106,11 +90,24 @@ def GetData(url, tag):
     else:
         return False
 
+def get_fren_web(url, tag):
+    # Lấy văn bản từ URL và thẻ người dùng chỉ định:
+    cleaned_text = get_text(url, tag)
+
+    if cleaned_text:
+        # Đếm tần suất xuất hiện của các ký tự ASCII:
+        frequencies = count_ascii_characters(cleaned_text)
+        frequencies = clean_and_sort_dict(frequencies)
+
+        # Chia các nhóm tần suất gần nhau:
+        frequencies = group_frequencies(frequencies)
+    return frequencies
+
 # Hàm chính để chạy chương trình:
 if __name__ == "__main__":
     # Nhập URL và thẻ HTML từ bàn phím
-    url = input("Nhập URL của trang web: ")
-    tag = input("Nhập thẻ HTML (ví dụ: 'article', 'content', 'div', v.v.): ")
+    url = 'https://edition.cnn.com/2024/10/20/americas/cuba-blackout-third-day-failed-restore-intl/index.html'
+    tag = 'article__content'
 
     # Lấy văn bản từ URL và thẻ người dùng chỉ định:
     cleaned_text = get_text(url, tag)
@@ -121,14 +118,10 @@ if __name__ == "__main__":
         frequencies = clean_and_sort_dict(frequencies)
 
         # Chia các nhóm tần suất gần nhau:
-        # grouped_frequencies = group_frequencies(frequencies)
+        frequencies = group_frequencies(frequencies)
 
         # Trả kết quả dưới dạng dictionary:
         # result_dict = {group: dict(chars) for group, chars in grouped_frequencies.items()}
         print("Kết quả nhóm các ký tự với tần suất gần bằng nhau:", frequencies)
-
-        # Tính số bit tối thiểu cần để mã hóa:
-        min_bits = calculate_min_bits(frequencies)
-        print(f"\nSố bit tối thiểu cần thiết để mã hóa: {min_bits} bits")
     else:
         print("Không thể lấy văn bản từ URL cung cấp.")
