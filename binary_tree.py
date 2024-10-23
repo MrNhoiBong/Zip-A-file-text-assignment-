@@ -28,9 +28,7 @@ def build_huffman_tree(frequencies):
         merged.left = left
         merged.right = right
         heapq.heappush(heap, merged)
-
     return heap[0]
-
 
 # Hàm mã hóa cây Huffman thành chuỗi ASCII8
 def generate_huffman_text(node):
